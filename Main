@@ -1,0 +1,120 @@
+from datetime import datetime
+
+# Define an empty list to store the tasks
+tasks = []
+
+# Function to display the menu options
+def display_menu():
+    print("\nTo-Do List App")
+    print("1. Add Task")
+    print("2. View All Tasks")
+    print("3. Edit Task")
+    print("4. Mark Task as Completed")
+    print("5. Delete Task")
+    print("6. Exit")
+
+# Function to add a new task
+def add_task():
+    task_name = input("Enter the task name: ")
+    deadline_str = input("Enter the deadline (YYYY-MM-DD HH:MM): ")
+    
+    try:
+        deadline = datetime.strptime(deadline_str, "%Y-%m-%d %H:%M")
+    except ValueError:
+        print("Invalid date format. Please try again.")
+        return
+    
+    task = {
+        "name": task_name,
+        "deadline": deadline,
+        "completed": False
+    }
+    
+    tasks.append(task)
+    print(f"Task '{task_name}' added successfully!")
+
+# Function to view all tasks
+def view_tasks():
+    if not tasks:
+        print("No tasks available.")
+        return
+    
+    for index, task in enumerate(tasks):
+        status = "Completed" if task["completed"] else "Pending"
+        deadline = task["deadline"].strftime("%Y-%m-%d %H:%M")
+        print(f"{index + 1}. {task['name']} | Deadline: {deadline} | Status: {status}")
+
+# Function to edit an existing task
+def edit_task():
+    view_tasks()
+    if not tasks:
+        return
+    
+    task_num = int(input("Enter the task number you want to edit: "))
+    
+    if 0 < task_num <= len(tasks):
+        task = tasks[task_num - 1]
+        new_name = input(f"Enter new name for the task (current: {task['name']}): ")
+        deadline_str = input(f"Enter new deadline (YYYY-MM-DD HH:MM) (current: {task['deadline'].strftime('%Y-%m-%d %H:%M')}): ")
+        
+        try:
+            new_deadline = datetime.strptime(deadline_str, "%Y-%m-%d %H:%M")
+        except ValueError:
+            print("Invalid date format. Please try again.")
+            return
+        
+        task["name"] = new_name
+        task["deadline"] = new_deadline
+        print(f"Task {task_num} updated successfully!")
+    else:
+        print("Invalid task number.")
+
+# Function to mark a task as completed
+def mark_completed():
+    view_tasks()
+    if not tasks:
+        return
+    
+    task_num = int(input("Enter the task number to mark as completed: "))
+    
+    if 0 < task_num <= len(tasks):
+        tasks[task_num - 1]["completed"] = True
+        print(f"Task {task_num} marked as completed.")
+    else:
+        print("Invalid task number.")
+
+# Function to delete a task
+def delete_task():
+    view_tasks()
+    if not tasks:
+        return
+    
+    task_num = int(input("Enter the task number to delete: "))
+    
+    if 0 < task_num <= len(tasks):
+        tasks.pop(task_num - 1)
+        print(f"Task {task_num} deleted.")
+    else:
+        print("Invalid task number.")
+
+# Main loop to run the to-do app
+while True:
+    display_menu()
+    
+    choice = input("Enter your choice (1-6): ")
+    
+    if choice == "1":
+        add_task()
+    elif choice == "2":
+        view_tasks()
+    elif choice == "3":
+        edit_task()
+    elif choice == "4":
+        mark_completed()
+    elif choice == "5":
+        delete_task()
+    elif choice == "6":
+        print("Exiting To-Do List App. Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please try again.")
